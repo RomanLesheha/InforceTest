@@ -1,0 +1,85 @@
+﻿@model IEnumerable<Urls>
+@{
+    var selected = ViewBag.Selected as string;
+    var selectedObj = Model.SingleOrDefault(e => e.LongURL == selected);
+    var error = ViewBag.Error as string;
+}
+<div class="text-center">
+    @if (!string.IsNullOrEmpty(error))
+    {
+        <h2 id="error-message" style="color: red; font-weight: bold;">@error</h2>
+    }
+</div>
+
+<h5>Selected URL</h5>
+<div class="text-center">
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Long URL</th>
+                <th>Short URL</th>
+                <th>Created</th>
+                <th>Created By</th>
+                <th>Delete URL</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            <tr>
+                @if (selected!=null)
+                {
+                    <td>@selectedObj.LongURL</td>
+                    <td>@selectedObj.ShortURL</td>
+                    <td>@selectedObj.Created</td>
+                    <td>@selectedObj.CreatedBy</td>
+                    <td> <a class="btn btn-primary" asp-action="DeleteUrl" asp-controller="Home" asp-route-id="@selectedObj.Id">Delete</a></td>
+                }
+            </tr>
+            
+        </tbody>
+    </table>
+</div>
+
+<h5>All URLs</h5>
+<div class="text-center">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Long URL</th>
+                <th>Short URL</th>
+                <th>Created</th>
+                <th>Created By</th>
+                <th>Delete URL</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var url in Model.Where(e => e.LongURL != selected))
+            {
+                <tr>
+                    <td>@url.LongURL</td>
+                    <td>@url.ShortURL</td>
+                    <td>@url.Created</td>
+                    <td>@url.CreatedBy</td>
+                    <td> <a class="btn btn-primary" asp-action="DeleteUrl" asp-controller="Home" asp-route-id="@url.Id">Delete</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // Функція, яка встановлює значення null для елементу з id "error-message"
+    function hideErrorMessage() {
+        var errorMessage = document.getElementById("error-message");
+        if (errorMessage) {
+            errorMessage.innerHTML = null;
+        }
+    }
+
+    // Встановлюємо затримку в мілісекундах (наприклад, 3000 мс = 3 секунд)
+    var delayInMilliseconds = 3000;
+
+    // Викликаємо функцію для встановлення значення null після затримки
+    setTimeout(hideErrorMessage, delayInMilliseconds);
+</script>

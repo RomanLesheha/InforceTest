@@ -1,0 +1,78 @@
+﻿@model IEnumerable<Urls>
+@{
+    ViewData["Title"] = "Home Page";
+    var shortenedUrl = ViewBag.ShortenedUrl as string;
+    var error = ViewBag.Error as string;
+    var top10 = Model.Take(10);
+
+}
+<div class="text-center">
+    @if (!string.IsNullOrEmpty(error))
+    {
+        <h2 id="error-message" style="color: red; font-weight: bold;">@error</h2>
+    }
+    @if (!string.IsNullOrEmpty(shortenedUrl))
+    {
+        <h2>Your shortened URL:</h2>
+        <p>@shortenedUrl</p>
+    }
+
+    <div class="border p-3">
+        <form asp-controller="Home" asp-action="ShortUrl" method="post" class="form-inline">
+            <div class="form-group mr-2">
+                <label class="text-bold" for="longUrl" style="font-size:20px">Input your URL:</label>
+            </div>
+            <div class="form-group">
+                <input name="longUrl" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Shorten</button>
+        </form>
+    </div>
+</div>
+<div class="text-center">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Long URL</th>
+                <th>Short URL</th>
+                <th>Show Detail</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var url in top10)
+            {
+                <tr>
+                    <td>@url.LongURL</td>
+                    <td>@url.ShortURL</td>
+                    <td> <a class="btn btn-info" asp-action="DetailUrl" asp-controller="Home" asp-route-id="@url.Id">Detail</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // Функція, яка перенаправляє користувача на сторінку "Login"
+    function redirectToLogin() {
+        window.location.href = "/Users/Login";
+    }
+
+    // Функція, яка приховує повідомлення про помилку після певного часу
+    function hideErrorMessage() {
+        var errorMessage = document.getElementById("error-message");
+        if (errorMessage && errorMessage.innerText === "You are not authorized, please register!") {
+            setTimeout(function () {
+                redirectToLogin();
+                errorMessage.innerHTML = null;
+            }, delayInMilliseconds);
+        } else {
+            errorMessage.innerHTML = null;
+        }
+    }
+
+    // Встановлюємо затримку в мілісекундах (наприклад, 4000 мс = 4 секунд)
+    var delayInMilliseconds = 4000;
+
+    // Викликаємо функцію для приховування повідомлення про помилку після затримки
+    setTimeout(hideErrorMessage, delayInMilliseconds);
+</script>

@@ -1,0 +1,75 @@
+﻿
+<div class="justify-content-center" >
+    <div>
+        <h5>
+            There are many sites on which you can shorten the URL, so I decided not to come up with something new,
+            but simply to parse the data from an already existing site.
+            I chose the site <b>TinyUrl</b>.
+            I make an API request in which I pass the URL that I want to shorten and as a result I get a shortened URL
+        </h5>
+        <h6>Functionality implemented on this website</h6>
+        <ul>
+            <li>Ability for users to create shortened URL addresses for long URLs.</li>
+            <li>Automatic shortening of URL addresses using the TinyURL service.</li>
+            <li>Validation of URL address length before shortening to preserve shorter URL addresses that are already below a certain length.</li>
+            <li>Validation of the URL address protocol and adding "http://" if absent to ensure proper formatting.</li>
+            <li>Ability for users to delete their created shortened URL addresses.</li>
+            <li>Access control for the delete function based on user roles.</li>
+            <li>Display of a list of shortened URL addresses on the page with the option to delete each URL address.</li>
+            <li>Display of delete button only for URL addresses that the user has access to.</li>
+            <li>User registration has been implemented with the possibility of memorization by recording data in a cookie</li>
+            <li>An error notification system that appears on the screen for a certain time has been implemented</li>
+        </ul>
+        <h6>The function that implements it</h6>
+        <pre>
+        <code class="code-block">
+            public static async Task&lt;string&gt; MakeTinyUrlByTinyUrl(string url)
+            {
+                try
+                {
+                    if (url.Length &lt;= 30)
+                    {
+                        return url;
+                    }
+
+                    if (!url.ToLower().StartsWith("http") &amp;&amp; !url.ToLower().StartsWith("ftp"))
+                    {
+                        url = "http://" + url;
+                    }
+
+                    var request = WebRequest.Create("http://tinyurl.com/api-create.php?url=" + url);
+                    var res = await request.GetResponseAsync();
+
+                    string text;
+                    using (var reader = new StreamReader(res.GetResponseStream()))
+                    {
+                        text = await reader.ReadToEndAsync();
+                    }
+
+                    return text;
+                }
+                catch (Exception)
+                {
+                    return url;
+                }
+            }
+            </code>
+        </pre>  
+    </div>
+    
+</div>
+
+<style>
+    .code-block {
+        font-size:10px;
+        display: block;
+        background-color: black;
+        color: white;
+        padding: 10px;
+        tab-size: 4;
+        -moz-tab-size: 4;
+        -webkit-tab-size: 4;
+        white-space: pre-wrap;
+        font-family: monospace;
+    }
+</style>
